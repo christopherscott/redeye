@@ -43,7 +43,7 @@ module Redeye
     end
 
     def start_process
-      puts "starting process: something..."
+      puts "starting process: #{@pid}"
       @pid = Process::spawn("ruby", @file)
       @last_modified = File.mtime(@file)
     end
