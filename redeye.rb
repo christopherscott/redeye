@@ -11,6 +11,7 @@
 #   -x/--executable: executable that runs the program, defaults to "ruby"
 #   -r/--restart on error: auto-restart the program if exits with anything but 0
 #   -h/--help: help stuff
+#   -t/--intercal: time to check
 
 module Redeye
 
