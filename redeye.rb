@@ -53,6 +53,10 @@ module Redeye
       Process::kill("SIGTERM", @pid)
     end
 
+    def file_modified?
+      File.mtime(@file) != @last_modified
+    end
+
   end
 
   class IntervalTimer
