@@ -85,8 +85,3 @@ module Redeye
 end
 
 Redeye::Watcher.new(ARGV).run
-# my_timer = Redeye::IntervalTimer.new
-# my_timer.start_interval {puts "tick"}
-# puts my_timer.ruthere
-# my_timer.end_interval
-# my_timer.instance_eval("puts @looping")
