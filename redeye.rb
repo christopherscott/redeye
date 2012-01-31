@@ -22,7 +22,7 @@ module Redeye
       # stash important info, flags, etc...
       # in instance variables
       @timer = IntervalTimer.new(5000) # check every 5 seconds
-      @file = ARGV[1]
+      @file = argv[1]
     end
 
     def run
