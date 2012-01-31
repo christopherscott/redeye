@@ -22,7 +22,8 @@ module Redeye
       # stash important info, flags, etc...
       # in instance variables
       @timer = IntervalTimer.new(5000) # check every 5 seconds
-      @file = argv[1]
+      # TODO: convert singular file to array of files/dirs to check
+      @file = argv[1] # TODO: need to convert this to usable path
     end
 
     def run
