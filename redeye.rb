@@ -44,7 +44,8 @@ module Redeye
 
     def start_process
       puts "starting process: something..."
-      @pid = Process::spawn("ruby", "/Users/chris/dev/ruby-stuff/tcpbot.rb")
+      @pid = Process::spawn("ruby", @file)
+      @last_modified = File.mtime(@file)
     end
 
     def kill_process
