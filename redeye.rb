@@ -22,15 +22,18 @@ module Redeye
       # stash important info, flags, etc...
       # in instance variables
       @timer = IntervalTimer.new(5000) # check every 5 seconds
+      @file = "/Users/chris/dev/ruby-stuff/tcpbot.rb"
     end
 
     def run
       start_process
       @timer.start_interval do
-        puts "hello"
+        puts "checking for modification..."
+        if file_modified?
+          restart_process
+        end
       end
       # watch for changes
-      sleep 30 #simulating watching for changes
     end
 
     def restart_process
