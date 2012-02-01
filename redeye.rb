@@ -75,7 +75,7 @@ module Redeye
       Process::kill("SIGTERM", @pid)
     end
 
-    def file_modified?
+    def anything_was_modified?
       File.mtime(@file) != @last_modified
     end
 
