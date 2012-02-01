@@ -5,7 +5,9 @@ module Redeye
   
   module Helpers
 
-    def parse_options!
+    def parse_options!(defaults)
+
+      @options = OpenStruct.new(defaults)
 
       @option_parser = OptionParser.new do |opts|
 
