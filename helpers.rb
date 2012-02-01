@@ -24,7 +24,9 @@ module Redeye
           "Comma separated list of files/directories to watch") do |paths|
           paths.each do |path|
             if File.exists?(path)
-              @options.paths << File.expand_path(path)
+              path = File.expand_path(path)
+              mtime = File.mtime(path)
+              @options.paths[path] = mtime
             else
               puts %!ignoring "#{path}" -- file or directory does not exist!
             end
