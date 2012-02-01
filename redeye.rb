@@ -51,7 +51,10 @@ module Redeye
       start_process
       @timer.start_interval do
         puts "checking for modifications..."
-        if anything_was_modified? then restart_process end
+        if anything_was_modified?
+          record_times :for => @options.paths.keys
+          restart_process
+        end
       end
       # watch for changes
     end
@@ -65,7 +68,6 @@ module Redeye
     def start_process
       puts "starting process: #{@pid}"
       @pid = Process::spawn("ruby", @file)
-      @last_modified = File.mtime(@file)
     end
 
     def kill_process
@@ -74,7 +76,13 @@ module Redeye
     end
 
     def anything_was_modified?
-      File.mtime(@file) != @last_modified
+      @options.paths.each do |path, mtime|
+        puts "path: #{path}, recorded-mtime: #{mtime}, current-mtime: #{File.mtime(path)}"
+        if File.mtime(path) != mtime
+          return true
+        end
+      end
+      false
     end
 
   end

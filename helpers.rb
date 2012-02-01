@@ -22,16 +22,7 @@ module Redeye
 
         opts.on("-w", "--watch PATHS", Array,
           "Comma separated list of files/directories to watch") do |paths|
-          paths.each do |path|
-            if File.exists?(path)
-              path = File.expand_path(path)
-              mtime = File.mtime(path)
-              @options.paths[path] = mtime
-            else
-              puts %!ignoring "#{path}" -- file or directory does not exist!
-            end
-          end
-          # @options.paths = paths
+          record_times :for => paths
         end
 
         opts.on("-x", "--executable PROGRAM",
@@ -85,6 +76,15 @@ module Redeye
       exit
     end
 
+    def record_times(paths)
+      paths[:for].each do |path|
+        if File.exists?(path)
+          @options.paths[File.expand_path(path)] = File.mtime(path)
+        else
+          puts %!ignoring "#{path}" -- file or directory does not exist!
+        end
+      end        
+    end
 
   end
 
