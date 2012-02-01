@@ -24,16 +24,11 @@ module Redeye
 
     def initialize(argv)
 
-      # parse command line options
-      # stash important info, flags, etc...
-      # in instance variables
-      @timer = IntervalTimer.new(5000) # check every 5 seconds
-      # TODO: convert singular file to array of files/dirs to check
-
       defaults = {
         interval: 2000,
         executable: "ruby",
-        restart: false
+        restart: false,
+        paths: []
       }
 
       @options = OpenStruct.new(defaults)
