@@ -7,11 +7,15 @@
 # similar to node.js' supervisor
 
 # redeye tcpbot.rb 
+#   -h/--help
 #   -w/--watch: comma delimited list of files,folders to watch
 #   -x/--executable: executable that runs the program, defaults to "ruby"
+#   -i/--interval: time interval to check for file modifications
 #   -r/--restart on error: auto-restart the program if exits with anything but 0
-#   -h/--help: help stuff
-#   -t/--intercal: time to check
+
+require './interval_timer'
+require 'optparse'
+require 'ostruct'
 
 module Redeye
 
@@ -23,10 +27,60 @@ module Redeye
       # in instance variables
       @timer = IntervalTimer.new(5000) # check every 5 seconds
       # TODO: convert singular file to array of files/dirs to check
-      @file = argv[1] # TODO: need to convert this to usable path
+
+      defaults = {
+        interval: 2000,
+        executable: "ruby",
+        restart: false
+      }
+
+      @options = OpenStruct.new(defaults)
+
+      option_parser = OptionParser.new do |opts|
+
+        opts.banner = "Usage: redeye.rb [options...] <file>"
+        opts.separator ""
+        opts.separator "Specific options:"
+
+        opts.on("-h", "--help", "Show this message") do
+          puts opts
+          exit
+        end
+
+        opts.on("-w", "--watch PATHS", Array, "Comma separated list of files/directories to watch") do |paths|
+          @options.paths = paths
+        end
+
+        opts.on("-x", "--executable PROGRAM", "Executable to run file (defaults to 'ruby')") do |program|
+          @options.executable = program
+        end
+
+        opts.on("-r", "--restart", "Auto-restart process on error") do
+          @options.restart = true
+        end
+
+        opts.on("-i", "--interval MILLISECONDS", "Time interval (in milliseconds) to check for modifications") do |time|
+          @options.interval = time
+        end
+
+      end
+
+      begin
+        option_parser.parse!
+      rescue OptionParser::MissingArgument
+        puts "#{$!}\n\n#{option_parser.help}"
+        exit
+      end
+
+      
+      exit
+
     end
 
     def run
+
+      p @options.paths
+
       start_process
       @timer.start_interval do
         puts "checking for modification..."
@@ -56,29 +110,6 @@ module Redeye
 
     def file_modified?
       File.mtime(@file) != @last_modified
-    end
-
-  end
-
-  class IntervalTimer
-
-    def initialize(interval_in_ms=500)
-      # default to one thousand milliseconds between intervals
-      @interval = interval_in_ms / 1000
-    end
-
-    def start_interval
-      @start_time = Time.now
-      loop do
-        if at_interval? and block_given?
-          yield
-          @start_time = Time.now
-        end
-      end
-    end
-
-    def at_interval?
-      Time.now - @start_time > @interval
     end
 
   end
