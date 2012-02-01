@@ -44,11 +44,16 @@ module Redeye
           exit
         end
 
-        opts.on("-w", "--watch PATHS", Array, "Comma separated list of files/directories to watch") do |paths|
-          @options.paths = paths
+        opts.on("-w", "--watch PATHS", Array,
+          "Comma separated list of files/directories to watch") do |paths|
+          paths.each do |path|
+            @options.paths << File.expand_path(path) if File.exists?(path)
+          end
+          # @options.paths = paths
         end
 
-        opts.on("-x", "--executable PROGRAM", "Executable to run file (defaults to 'ruby')") do |program|
+        opts.on("-x", "--executable PROGRAM",
+        "Executable to run file (defaults to 'ruby')") do |program|
           @options.executable = program if File.executable program
         end
 
