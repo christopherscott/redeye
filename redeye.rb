@@ -15,8 +15,6 @@
 
 require './interval_timer'
 require './helpers'
-require 'optparse'
-require 'ostruct'
 require 'pp'
 
 module Redeye
