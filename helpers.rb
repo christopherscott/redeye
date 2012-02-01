@@ -36,7 +36,7 @@ module Redeye
 
         opts.on("-x", "--executable PROGRAM",
         "Executable to run file (defaults to 'ruby')") do |program|
-          @options.executable = program if File.executable program
+          @options.executable = program if File.executable? program
         end
 
         opts.on("-r", "--restart", "Auto-restart process on error") do
