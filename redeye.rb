@@ -40,8 +40,6 @@ module Redeye
 
       pp @options
 
-      exit
-
     end
 
     
