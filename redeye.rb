@@ -61,7 +61,8 @@ module Redeye
           @options.restart = true
         end
 
-        opts.on("-i", "--interval MILLISECONDS", "Time interval (in milliseconds) to check for modifications") do |time|
+        opts.on("-i", "--interval MILLISECONDS", Integer,
+        "Time interval (in milliseconds) to check for modifications") do |time|
           @options.interval = time
         end
 
