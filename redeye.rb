@@ -14,6 +14,7 @@
 #   -r/--restart on error: auto-restart the program if exits with anything but 0
 
 require './interval_timer'
+require './helpers'
 require 'optparse'
 require 'ostruct'
 require 'pp'
@@ -21,6 +22,8 @@ require 'pp'
 module Redeye
 
   class Watcher
+    
+    include Redeye::Helpers
 
     def initialize(argv)
 
@@ -33,74 +36,22 @@ module Redeye
 
       @options = OpenStruct.new(defaults)
 
-      option_parser = OptionParser.new do |opts|
+      parse_options!
 
-        opts.banner = "Usage: redeye.rb [options...] <file>"
-        opts.separator ""
-        opts.separator "Specific options:"
-
-        opts.on("-h", "--help", "Show this message") do
-          puts opts
-          exit
-        end
-
-        opts.on("-w", "--watch PATHS", Array,
-          "Comma separated list of files/directories to watch") do |paths|
-          paths.each do |path|
-            @options.paths << File.expand_path(path) if File.exists?(path)
-          end
-          # @options.paths = paths
-        end
-
-        opts.on("-x", "--executable PROGRAM",
-        "Executable to run file (defaults to 'ruby')") do |program|
-          @options.executable = program if File.executable program
-        end
-
-        opts.on("-r", "--restart", "Auto-restart process on error") do
-          @options.restart = true
-        end
-
-        opts.on("-i", "--interval MILLISECONDS", Integer,
-        "Time interval (in milliseconds) to check for modifications") do |time|
-          @options.interval = time
-        end
-
-      end
-
-      begin
-        option_parser.parse!
-      rescue OptionParser::MissingArgument
-        puts "#{$!}\n\n#{option_parser.help}"
-        exit
-      end
-
-      begin
-        @file = process_main_file(ARGV[0])
-      rescue IOError
-        puts $!
-        exit
-      end
-
+      @options.paths << @file
+      
+      @timer = IntervalTimer.new(@options.interval)
+        
       pp @options
 
       exit
 
     end
 
-    def process_main_file(argument)
-      file_to_run = File.expand_path(argument)
-      if File.exists? file_to_run 
-        file_to_run
-      else
-        raise IOError, "File to run does not exist: #{file_to_run}"
-      end
-    end
+    
 
     def run
-
       p @options.paths
-
       start_process
       @timer.start_interval do
         puts "checking for modification..."
