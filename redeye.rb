@@ -27,21 +27,19 @@ module Redeye
 
     def initialize(argv)
 
-      defaults = {
+      parse_options!({
+
+        # defaults:
+
         interval: 2000,
         executable: "ruby",
         restart: false,
-        paths: []
-      }
+        paths: {}
 
-      @options = OpenStruct.new(defaults)
-
-      parse_options!
-
-      @options.paths << @file
+      })
       
       @timer = IntervalTimer.new(@options.interval)
-        
+
       pp @options
 
       exit
@@ -54,10 +52,8 @@ module Redeye
       p @options.paths
       start_process
       @timer.start_interval do
-        puts "checking for modification..."
-        if file_modified?
-          restart_process
-        end
+        puts "checking for modifications..."
+        if anything_was_modified? then restart_process end
       end
       # watch for changes
     end
