@@ -16,12 +16,14 @@
 require './interval_timer'
 require 'optparse'
 require 'ostruct'
+require 'pp'
 
 module Redeye
 
   class Watcher
 
     def initialize(argv)
+
       # parse command line options
       # stash important info, flags, etc...
       # in instance variables
@@ -52,7 +54,7 @@ module Redeye
         end
 
         opts.on("-x", "--executable PROGRAM", "Executable to run file (defaults to 'ruby')") do |program|
-          @options.executable = program
+          @options.executable = program if File.executable program
         end
 
         opts.on("-r", "--restart", "Auto-restart process on error") do
@@ -72,9 +74,26 @@ module Redeye
         exit
       end
 
-      
+      begin
+        @file = process_main_file(ARGV[0])
+      rescue IOError
+        puts $!
+        exit
+      end
+
+      pp @options
+
       exit
 
+    end
+
+    def process_main_file(argument)
+      file_to_run = File.expand_path(argument)
+      if File.exists? file_to_run 
+        file_to_run
+      else
+        raise IOError, "File to run does not exist: #{file_to_run}"
+      end
     end
 
     def run
