@@ -36,46 +36,49 @@ module Redeye
     include Redeye::Helpers
 
     def initialize(argv)
-
-      parse_options!({
-
-        # defaults:
-
-        interval: 2000,
-        executable: "ruby",
-        restart: false,
-        paths: {}
-
-      })
-      
+      default_options = {
+        # defaults options
+        :interval => 2000,
+        :executable => "ruby",
+        :restart => false,
+        :paths => {}
+      }
+      # parse command line options
+      parse_options!(default_options)
+      # assuming all went well, initialize timer
       @timer = IntervalTimer.new(@options.interval)
-
+      # for debugging, ok to remove
       pp @options
-
     end
 
-    
-
     def run
+      # for debugging, ok to remove
       p @options.paths
+      # kick off the script
       start_process
+      # start the timer
       @timer.start_interval do
+        # for debugging ok to remove
         puts "checking for modifications..."
+        # check for any changes
         if anything_was_modified?
-          record_times :for => @options.paths.keys
+          # record new times for all paths
+          record_times :paths => @options.paths.keys
+          # restart the process
           restart_process
         end
       end
-      # watch for changes
     end
 
     def restart_process
       kill_process
+      # verbose
       puts "restarting process #{@pid}"
       start_process
     end
 
     def start_process
+      # verbose
       puts "starting process: #{@pid}"
       @pid = Process::spawn("ruby", @file)
     end
