@@ -41,12 +41,10 @@ module Redeye
 
       end
 
-      begin
-        @option_parser.parse!
-      rescue
-        bugout
-      end
+      # start parsing options
+      begin @option_parser.parse! rescue bugout end
 
+      # validate required <file> argument
       begin
         if ARGV[0].nil?
           bugout "Missing required <file> argument"
@@ -81,9 +79,7 @@ module Redeye
     end
 
     def bugout(msg="")
-      puts $! || msg
-      puts ""
-      puts @option_parser.help
+      puts ($! || msg) + "\n #{@option_parser.help}"
       exit
     end
 
