@@ -15,22 +15,22 @@ Redeye will only watch for when an actual file is created. It will not restart t
 
 ## Examples:
 
-  $ redeye.rb server-script.rb
+    $ redeye.rb server-script.rb
 
 Spawn new process "ruby server-script.rb". Watch for changes to "server-script.rb", if any are detected it kills and restarts the subprocess.
 
-  $ redeye.rb -w /usr/lib/data server-script.rb
+    $ redeye.rb -w /usr/lib/data server-script.rb
 
 Watch for changes to to any file in "/usr/lib/data" (and all it's subfolders), as well as "server-script.rb".
 
-  $ redeye.rb -w /usr/lib/data,/usr/bin,/usr/var server-script.rb
+    $ redeye.rb -w /usr/lib/data,/usr/bin,/usr/var server-script.rb
 
 Watch for changes in all the following: /usr/lib/data, /usr/bin, /usr/var, server-script.rb
 
-  $ redeye.rb -i 10 server-script.rb
+    $ redeye.rb -i 10 server-script.rb
 
 Watch for changes to "server-script" every 10 seconds.
 
-  $ redeye.rb -x /bin/sh shell-script.sh 
+    $ redeye.rb -x /bin/sh shell-script.sh 
 
 Spawn "/bin/sh shell-script.sh" and watch for changes to shell-script.sh
