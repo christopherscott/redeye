@@ -14,8 +14,6 @@
 #   -r/--restart on error: auto-restart the program if exits with anything but 0
 
 # TODO: 
-# => add 'verbose' command line option
-# => test against multiple files/dirs
 # => test against windows version
 # => test against linux version
 # => test against jruby
@@ -45,19 +43,12 @@ module Redeye
     end
 
     def run
-      # for debugging, ok to remove
       p @options.paths
-      # kick off the script
       start_process
-      # start the timer
       loop do
-        # for debugging ok to remove
         vlog "checking for modifications..."
-        # check for any changes
         if anything_was_modified?
-          # record new times for all paths
           record_times @options.paths.keys
-          # restart the process
           restart_process
         end
         sleep @options.interval
