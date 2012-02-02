@@ -33,18 +33,19 @@ module Redeye
 
   class Watcher
     
+    DEFAULTS = {
+      paths: Hash.new,
+      executable: "ruby",
+      interval: 2000,
+      restart: false,
+      verbose: false
+    }
+      
     include Redeye::Helpers
 
     def initialize(argv)
-      default_options = {
-        # defaults options
-        :interval => 2000,
-        :executable => "ruby",
-        :restart => false,
-        :paths => {}
-      }
       # parse command line options
-      parse_options!(default_options)
+      parse_options!(DEFAULTS)
       # assuming all went well, initialize timer
       @timer = IntervalTimer.new(@options.interval)
       # for debugging, ok to remove
