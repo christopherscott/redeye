@@ -15,7 +15,7 @@ module Redeye
     def parse_options!(defaults)
 
       @options = OpenStruct.new(defaults)
-
+      @options.paths = Hash.new
       @option_parser = OptionParser.new do |opts|
         opts.banner = "Usage: redeye.rb [options...] <file>"
         opts.separator ""
