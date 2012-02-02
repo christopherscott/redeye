@@ -10,10 +10,11 @@ module Redeye
     def start_interval
       @start_time = Time.now
       loop do
-        if at_interval? and block_given?
+        if block_given?
           yield
           @start_time = Time.now
         end
+        sleep @interval
       end
     end
 

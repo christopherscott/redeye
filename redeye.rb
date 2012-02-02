@@ -25,31 +25,23 @@
 # => refactor into gem (per specification)
 # => capture SIGINT, other sigs, clean up nicely
 
-require './interval_timer'
 require './helpers'
-require 'pp'
 
 module Redeye
 
   class Watcher
     
     DEFAULTS = {
-      paths: Hash.new,
       executable: "ruby",
-      interval: 2000,
+      interval: 10000,
       restart: false,
       verbose: false
     }
-      
+    
     include Redeye::Helpers
 
     def initialize(argv)
-      # parse command line options
       parse_options!(DEFAULTS)
-      # assuming all went well, initialize timer
-      @timer = IntervalTimer.new(@options.interval)
-      # for debugging, ok to remove
-      pp @options
     end
 
     def run
@@ -58,16 +50,17 @@ module Redeye
       # kick off the script
       start_process
       # start the timer
-      @timer.start_interval do
+      loop do
         # for debugging ok to remove
         vlog "checking for modifications..."
         # check for any changes
         if anything_was_modified?
           # record new times for all paths
-          record_times :paths => @options.paths.keys
+          record_times @options.paths.keys
           # restart the process
           restart_process
         end
+        sleep @options.interval
       end
     end
 
@@ -78,7 +71,7 @@ module Redeye
     end
 
     def start_process
-      @pid = Process::spawn(@options.executable, @file)
+      @pid = Process::spawn(@options.executable, @mainfile[:path])
       vlog "starting process: #{@pid}"
     end
 
@@ -88,13 +81,35 @@ module Redeye
     end
 
     def anything_was_modified?
-      @options.paths.each do |path, mtime|
-        vlog "path: #{path}, recorded-mtime: #{mtime}, current-mtime: #{File.mtime(path)}"
-        if File.mtime(path) != mtime
-          return true
+      modified = false
+      if @mainfile[:mtime] != File.mtime(@mainfile[:path])
+        return true
+      end
+      @options.paths.each do |path, meta|
+        if count_different?(path, meta[:count]) or mtimes_different?(meta[:files])
+          modified = true
+          break
         end
       end
-      false
+      modified
+    end
+
+    def count_different?(path, count)
+      filelist = Dir.glob(File.join(File.expand_path(path),"**/*")).select do |path|
+        !File.directory?(path)
+      end
+      filelist.length != count
+    end
+
+    def mtimes_different?(filelist)
+      modified = false
+      filelist.each do |file, mtime|
+        if File.mtime(file) != mtime
+          modified = true
+          break
+        end
+      end
+      modified
     end
 
   end

@@ -26,15 +26,17 @@ module Redeye
         end
         opts.on("-w", "--watch PATHS", Array,
           "Comma separated list of files/directories to watch") do |paths|
-          record_times :paths => paths, :initial => true
+          record_times paths
         end
         opts.on("-x", "--executable PROGRAM",
         "Executable to run file (defaults to 'ruby')") do |program|
           @options.executable = program if File.executable? program
         end
-        opts.on("-i", "--interval MILLISECONDS", Integer,
-        "Time interval (in milliseconds) to check for modifications") do |time|
-          @options.interval = time
+        opts.on("-i", "--interval SECONDS", Integer,
+        "Time interval (in seconds) to check for modifications") do |time|
+          # store interval, must be 1 second or greater
+          @options.interval = time > 0 ? time : 1
+          puts @options.interval
         end
         opts.on("-r", "--restart", "Auto-restart process on error") do
           @options.restart = true
@@ -44,18 +46,16 @@ module Redeye
         end
       end
 
-      # start parsing options
-      begin @option_parser.parse! rescue bugout end
 
-      # validate required <file> argument
       begin
+        @option_parser.parse!
         if ARGV[0].nil?
           bugout "Missing required <file> argument"
         else
           mainfile = process_main_file(ARGV[0])
           @mainfile = {path: mainfile, mtime: File.mtime(mainfile)}
         end
-      rescue IOError
+      rescue
         bugout
       end
 
@@ -70,14 +70,20 @@ module Redeye
       end
     end
 
-    def record_times(options)
-      options[:paths].each do |path|
-        path = File.expand_path(path)
-        unless options[:initial] and !File.exists?(path)
-          @options.paths[path] = File.mtime(path)
-        else
-          vlog %!ignoring "#{path}" -- file or directory does not exist!
+
+    def record_times(paths)
+      paths.each do |path|
+        files = Dir.glob(File.join(File.expand_path(path),"**/*")).select do |path|
+          !File.directory?(path)
         end
+        count = files.length
+        # map list of filenames into hash, where file location is key
+        # and the file mtime is the value
+        filelist = files.map_to_hash {|path| { path => File.mtime(path)}}
+        @options.paths[path] = {
+          :count => count,
+          :files => filelist
+        }
       end
     end
 
@@ -86,7 +92,7 @@ module Redeye
     end
 
     def bugout(msg="")
-      puts ($! || msg) + "\n #{@option_parser.help}"
+      puts "#{($! || msg)}\n #{@option_parser.help}"
       exit
     end
 
