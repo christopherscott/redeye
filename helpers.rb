@@ -52,8 +52,8 @@ module Redeye
         if ARGV[0].nil?
           bugout "Missing required <file> argument"
         else
-          @file = process_main_file(ARGV[0])
-          @options.paths[File.expand_path(@file)] = File.mtime(@file)
+          mainfile = process_main_file(ARGV[0])
+          @mainfile = {path: mainfile, mtime: File.mtime(mainfile)}
         end
       rescue IOError
         bugout
