@@ -43,7 +43,7 @@ module Redeye
 
       begin
         @option_parser.parse!
-      rescue OptionParser::MissingArgument, OptionParser::InvalidArgument
+      rescue
         bugout
       end
 
