@@ -22,7 +22,7 @@
 # => add docco documentation
 # => refactor into gem (per specification)
 # => capture SIGINT, other sigs, clean up nicely
-
+ 
 require './helpers'
 
 module Redeye
@@ -31,7 +31,7 @@ module Redeye
     
     DEFAULTS = {
       executable: "ruby",
-      interval: 10000,
+      interval: 5,
       restart: false,
       verbose: false
     }
@@ -43,7 +43,6 @@ module Redeye
     end
 
     def run
-      p @options.paths
       start_process
       loop do
         vlog "checking for modifications..."
