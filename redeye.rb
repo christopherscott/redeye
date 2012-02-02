@@ -59,7 +59,7 @@ module Redeye
       # start the timer
       @timer.start_interval do
         # for debugging ok to remove
-        puts "checking for modifications..."
+        vlog "checking for modifications..."
         # check for any changes
         if anything_was_modified?
           # record new times for all paths
@@ -72,25 +72,23 @@ module Redeye
 
     def restart_process
       kill_process
-      # verbose
-      puts "restarting process #{@pid}"
+      vlog "restarting process #{@pid}"
       start_process
     end
 
     def start_process
-      # verbose
-      puts "starting process: #{@pid}"
-      @pid = Process::spawn("ruby", @file)
+      @pid = Process::spawn(@options.executable, @file)
+      vlog "starting process: #{@pid}"
     end
 
     def kill_process
-      puts "killing process #{@pid}"
       Process::kill("SIGTERM", @pid)
+      vlog "killing process #{@pid}"
     end
 
     def anything_was_modified?
       @options.paths.each do |path, mtime|
-        puts "path: #{path}, recorded-mtime: #{mtime}, current-mtime: #{File.mtime(path)}"
+        vlog "path: #{path}, recorded-mtime: #{mtime}, current-mtime: #{File.mtime(path)}"
         if File.mtime(path) != mtime
           return true
         end

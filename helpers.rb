@@ -69,9 +69,13 @@ module Redeye
         unless options[:initial] and !File.exists?(path)
           @options.paths[path] = File.mtime(path)
         else
-          puts %!ignoring "#{path}" -- file or directory does not exist!
+          vlog %!ignoring "#{path}" -- file or directory does not exist!
         end
       end
+    end
+
+    def vlog(msg)
+      puts msg if @options.verbose
     end
 
     def bugout(msg="")
