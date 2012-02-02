@@ -2,8 +2,7 @@
 
 A command line utility for restarting a shell process if changes are detected in one (or many) directories. Takes one mandatory argument: the file to run in process. Any changes to that file and Redeye will kill and restart it for you automatically. Defaults to running script with "ruby" executable, and watching for changes every five (5) seconds. Will detect changes to any file, as well as any new files/folders that are added
 
-### Note: new file detection
-Redeye will only watch for when an actual file is created. It will not restart the process if an empty folder is created, for instance. 
+*Note:* Redeye will only restart the given process if there's a change to an existing file or if an entirely new file is detected. It will not restart the process if an empty folder is created, for instance.
 
 ## Usage:
   redeye [options] <file-to-run> 
