@@ -10,35 +10,31 @@ module Redeye
       @options = OpenStruct.new(defaults)
 
       @option_parser = OptionParser.new do |opts|
-
         opts.banner = "Usage: redeye.rb [options...] <file>"
         opts.separator ""
         opts.separator "Specific options:"
-
         opts.on("-h", "--help", "Show this message") do
           puts opts
           exit
         end
-
         opts.on("-w", "--watch PATHS", Array,
           "Comma separated list of files/directories to watch") do |paths|
           record_times :paths => paths, :initial => true
         end
-
         opts.on("-x", "--executable PROGRAM",
         "Executable to run file (defaults to 'ruby')") do |program|
           @options.executable = program if File.executable? program
         end
-
-        opts.on("-r", "--restart", "Auto-restart process on error") do
-          @options.restart = true
-        end
-
         opts.on("-i", "--interval MILLISECONDS", Integer,
         "Time interval (in milliseconds) to check for modifications") do |time|
           @options.interval = time
         end
-
+        opts.on("-r", "--restart", "Auto-restart process on error") do
+          @options.restart = true
+        end
+        opts.on("-v", "--verbose", "Run verbosely" ) do
+          @options.verbose = true
+        end
       end
 
       # start parsing options
