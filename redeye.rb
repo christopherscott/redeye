@@ -13,6 +13,18 @@
 #   -i/--interval: time interval to check for file modifications
 #   -r/--restart on error: auto-restart the program if exits with anything but 0
 
+# TODO: 
+# => add 'verbose' command line option
+# => test against multiple files/dirs
+# => test against windows version
+# => test against linux version
+# => test against jruby
+# => add license
+# => add meaningful comments
+# => add docco documentation
+# => refactor into gem (per specification)
+# => capture SIGINT, other sigs, clean up nicely
+
 require './interval_timer'
 require './helpers'
 require 'pp'
