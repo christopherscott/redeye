@@ -1,5 +1,12 @@
 require 'optparse'
 require 'ostruct'
+require 'pp'
+
+class Array
+  def map_to_hash
+    map { |e| yield e }.inject({}) { |carry, e| carry.merge! e }
+  end
+end
 
 module Redeye
   
