@@ -5,12 +5,12 @@ A command line utility for restarting a shell process if changes are detected in
 *Note:* Redeye will only restart the given process if there's a change to an existing file or if an entirely new file is detected. It will not restart the process if an empty folder is created, for instance.
 
 ## Usage:
-  redeye [options] <file-to-run> 
-    -h/--help
-    -w/--watch: comma delimited list of files, folders to watch
-    -x/--executable: executable that runs the program, defaults to "ruby"
-    -i/--interval: time interval to check for file modifications
-    -r/--restart on error: auto-restart the program if exits with anything but 0
+    redeye [options] <file-to-run> 
+      -h/--help
+      -w/--watch: comma delimited list of files, folders to watch
+      -x/--executable: executable that runs the program, defaults to "ruby"
+      -i/--interval: time interval to check for file modifications
+      -r/--restart on error: auto-restart the program if exits with anything but 0
 
 ## Examples:
 
