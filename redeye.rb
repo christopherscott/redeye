@@ -18,10 +18,8 @@
 # => test against linux version
 # => test against jruby
 # => add license
-# => add meaningful comments
-# => add docco documentation
+# => add documentation
 # => refactor into gem (per specification)
-# => capture SIGINT, other sigs, clean up nicely
  
 require './helpers'
 
@@ -45,6 +43,7 @@ module Redeye
     def run
       start_process
       loop do
+        trap("INT") { puts " -- SIGINT: killing child process"; kill_process; exit }
         vlog "checking for modifications..."
         if anything_was_modified?
           record_times @options.paths.keys
@@ -52,6 +51,7 @@ module Redeye
         end
         sleep @options.interval
       end
+      
     end
 
     def restart_process
@@ -62,6 +62,7 @@ module Redeye
 
     def start_process
       @pid = Process::spawn(@options.executable, @mainfile[:path])
+      Process::detach(@pid)
       vlog "starting process: #{@pid}"
     end
 
