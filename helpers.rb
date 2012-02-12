@@ -8,7 +8,6 @@ class Array
   end
 end
 
-
 module Redeye
   
   module Helpers
@@ -25,9 +24,12 @@ module Redeye
           puts opts
           exit
         end
+        opts.on("-v", "--verbose", "Run verbosely" ) do
+          @options.verbose = true
+        end
         opts.on("-w", "--watch PATHS", Array,
           "Comma separated list of files/directories to watch") do |paths|
-          record_times paths
+          @options.watchdirs = paths
         end
         opts.on("-x", "--executable PROGRAM",
         "Executable to run file (defaults to 'ruby')") do |program|
@@ -36,17 +38,13 @@ module Redeye
         opts.on("-i", "--interval SECONDS", Integer,
         "Time interval (in seconds) to check for modifications") do |time|
           # store interval, must be 1 second or greater
-          @options.interval = time > 0 ? time : 1
-          puts @options.interval
+          default_interval = Redeye::Watcher::DEFAULTS["interval"]
+          @options.interval = time > 0 ? time : @options.interval
         end
         opts.on("-r", "--restart", "Auto-restart process on error") do
           @options.restart = true
         end
-        opts.on("-v", "--verbose", "Run verbosely" ) do
-          @options.verbose = true
-        end
       end
-
 
       begin
         @option_parser.parse!
@@ -54,7 +52,8 @@ module Redeye
           bugout "Missing required <file> argument"
         else
           mainfile = process_main_file(ARGV[0])
-          @mainfile = {path: mainfile, mtime: File.mtime(mainfile)}
+          @mainfile = {path: mainfile}
+          record_times @options.watchdirs
         end
       rescue
         bugout
