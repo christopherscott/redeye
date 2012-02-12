@@ -70,9 +70,12 @@ module Redeye
       end
     end
 
-
     def record_times(paths)
-      paths.each do |path|
+      # record time for main file
+      @mainfile[:mtime] = File.mtime(@mainfile[:path])
+
+      # loop through all watch directories, logging mtimes for each
+      @options.watchdirs.each do |path|
         files = Dir.glob(File.join(File.expand_path(path),"**/*")).select do |path|
           !File.directory?(path)
         end
