@@ -41,12 +41,19 @@ module Redeye
     end
 
     def run
+      vlog "[Redeye starting....]"
+      vlog "[watching: *#{@mainfile[:path]} #{@options.watchdirs.join(', ')}]"
+      vlog "[interval: #{@options.interval} seconds]"
+      vlog "[press CONTROL-C to stop Redeye]"
+      vlog ""
+
       start_process
+
       loop do
-        trap("INT") { puts " -- SIGINT: killing child process"; kill_process; exit }
-        vlog "checking for modifications..."
+        trap("INT") { puts " [SIGINT: cleaning up]"; kill_process; exit }
+        vlog "[checking for modifications... ]"
         if anything_was_modified?
-          record_times @options.paths.keys
+          record_times (@options.paths.keys << @mainfile[:path])
           restart_process
         end
         sleep @options.interval
@@ -56,19 +63,19 @@ module Redeye
 
     def restart_process
       kill_process
-      vlog "restarting process #{@pid}"
+      vlog "[restarting process #{@pid}]"
       start_process
     end
 
     def start_process
       @pid = Process::spawn(@options.executable, @mainfile[:path])
       Process::detach(@pid)
-      vlog "starting process: #{@pid}"
+      vlog "[starting process: #{@pid}]"
     end
 
     def kill_process
       Process::kill("SIGTERM", @pid)
-      vlog "killing process #{@pid}"
+      vlog "[killing process #{@pid}]"
     end
 
     def anything_was_modified?
