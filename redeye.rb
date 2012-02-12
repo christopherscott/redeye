@@ -53,7 +53,7 @@ module Redeye
         trap("INT") { puts " [SIGINT: cleaning up]"; kill_process; exit }
         vlog "[checking for modifications... ]"
         if anything_was_modified?
-          record_times (@options.paths.keys << @mainfile[:path])
+          record_times
           restart_process
         end
         sleep @options.interval

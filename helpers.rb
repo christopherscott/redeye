@@ -53,7 +53,7 @@ module Redeye
         else
           mainfile = process_main_file(ARGV[0])
           @mainfile = {path: mainfile}
-          record_times @options.watchdirs
+          record_times
         end
       rescue
         bugout
@@ -70,10 +70,9 @@ module Redeye
       end
     end
 
-    def record_times(paths)
+    def record_times
       # record time for main file
       @mainfile[:mtime] = File.mtime(@mainfile[:path])
-
       # loop through all watch directories, logging mtimes for each
       @options.watchdirs.each do |path|
         files = Dir.glob(File.join(File.expand_path(path),"**/*")).select do |path|
