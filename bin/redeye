@@ -1,0 +1,4 @@
+#! /usr/bin/env ruby
+
+require 'redeye'
+Redeye::Watcher.new(ARGV).run
