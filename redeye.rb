@@ -20,7 +20,7 @@
 # => add license
 # => add documentation
 # => refactor into gem (per specification)
- 
+
 require './helpers'
 
 module Redeye
