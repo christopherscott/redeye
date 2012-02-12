@@ -21,7 +21,7 @@
 # => add documentation
 # => refactor into gem (per specification)
 
-require './helpers'
+require 'redeye/helpers'
 
 module Redeye
 
@@ -112,9 +112,5 @@ module Redeye
 
   end
 
-end
-
-if __FILE__ == $0
-  Redeye::Watcher.new(ARGV).run
 end
 
