@@ -8,6 +8,7 @@ class Array
   end
 end
 
+
 module Redeye
   
   module Helpers

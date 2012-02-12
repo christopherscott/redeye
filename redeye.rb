@@ -107,4 +107,7 @@ module Redeye
 
 end
 
-Redeye::Watcher.new(ARGV).run
+if __FILE__ == $0
+  Redeye::Watcher.new(ARGV).run
+end
+
