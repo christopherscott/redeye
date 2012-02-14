@@ -17,9 +17,7 @@
 # => test against windows version
 # => test against linux version
 # => test against jruby
-# => add license
 # => add documentation
-# => refactor into gem (per specification)
 
 require 'redeye/helpers'
 
